@@ -1,0 +1,7 @@
+.env
+data/
+*.keytab
+__pycache__/
+*.pyc
+.venv/
+docker-compose.override.yml

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/static/favicon.svg" alt="" width="28" height="28">
+      <h1>{{TITLE}}</h1>
+    </div>
+    <div class="who">
+      <span id="who-name"></span>
+      <span id="who-role" class="role"></span>
+      <form method="post" action="/logout">
+        <button class="btn ghost small" type="submit" title="Esci o accedi con un altro account">Cambia utente</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="toolbar">
+      <div class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="q" type="search" placeholder="Cerca in nome, telefono, email, note, tag…" autocomplete="off" autofocus>
+      </div>
+      <button id="toggle-filters" class="btn secondary" type="button" aria-expanded="false">Filtri <span id="filter-badge" class="badge" hidden></span></button>
+      <a id="export" class="btn secondary" href="/api/export.csv">Esporta CSV</a>
+      <button id="new" class="btn primary" type="button" hidden>+ Nuovo contatto</button>
+    </section>
+
+    <section id="filters" class="filters" hidden>
+      <div class="grid4">
+        <label>Nome <input data-f="name" type="search"></label>
+        <label>Telefono <input data-f="phone" type="search"></label>
+        <label>Email <input data-f="email" type="search"></label>
+        <label>Note <input data-f="notes" type="search"></label>
+      </div>
+      <div class="tagfilter">
+        <span class="label">Tag</span>
+        <div id="tag-list" class="chips"></div>
+        <label class="check"><input id="untagged" type="checkbox"> Senza tag</label>
+      </div>
+      <button id="clear-filters" class="btn ghost small" type="button">Azzera filtri</button>
+    </section>
+
+    <p id="status" class="muted small"></p>
+
+    <table class="contacts" id="table">
+      <thead>
+        <tr><th>Nome</th><th>Telefono</th><th>Email</th><th>Tag</th><th>Note</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p id="empty" class="empty" hidden>Nessun contatto trovato.</p>
+  </main>
+
+  <!-- Dettaglio / modifica -->
+  <dialog id="dlg">
+    <form id="editor" method="dialog" novalidate>
+      <header class="dlg-head">
+        <h2 id="dlg-title">Contatto</h2>
+        <button type="button" class="icon" data-close aria-label="Chiudi">×</button>
+      </header>
+      <div class="dlg-body">
+        <label>Nome <input name="name" required maxlength="200"></label>
+
+        <fieldset>
+          <legend>Numeri di telefono</legend>
+          <div class="multi" data-list="phones"></div>
+          <button type="button" class="btn ghost small" data-add="phones">+ Aggiungi numero</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Email</legend>
+          <div class="multi" data-list="emails"></div>
+          <button type="button" class="btn ghost small" data-add="emails">+ Aggiungi email</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Tag</legend>
+          <div class="tag-input">
+            <div id="tag-chips" class="chips"></div>
+            <input id="tag-entry" list="tag-suggest" placeholder="Scrivi un tag e premi Invio">
+            <datalist id="tag-suggest"></datalist>
+          </div>
+        </fieldset>
+
+        <label>Note <textarea name="notes" rows="4" maxlength="10000"></textarea></label>
+        <p id="dlg-error" class="error" hidden></p>
+        <p id="dlg-meta" class="muted small"></p>
+      </div>
+      <footer class="dlg-foot">
+        <button type="button" id="delete" class="btn danger">Elimina</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn secondary" data-close>Annulla</button>
+        <button type="submit" id="save" class="btn primary">Salva</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <dialog id="view">
+    <header class="dlg-head">
+      <h2 id="view-title"></h2>
+      <button type="button" class="icon" data-close aria-label="Chiudi">×</button>
+    </header>
+    <div class="dlg-body" id="view-body"></div>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+# Rubrica — esempio di deploy.
+# Tutti i parametri specifici dell'azienda vanno nel file .env (vedi .env.example),
+# che NON va messo sotto versionamento.
+services:
+  rubrica:
+    image: ghcr.io/bluwolfer777/contacts:latest
+    # build: .            # in alternativa, compila l'immagine localmente
+    container_name: rubrica
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    environment:
+      APP_TITLE: ${APP_TITLE:-Rubrica}
+      # --- Active Directory / LDAP ---
+      LDAP_DOMAIN: ${LDAP_DOMAIN:?Imposta LDAP_DOMAIN nel file .env}   # es. example.local
+      LDAP_SERVER: ${LDAP_SERVER:-}               # default: ldap://<LDAP_DOMAIN>
+      LDAP_BASE_DN: ${LDAP_BASE_DN:-}             # default: ricavato dal dominio
+      LDAP_START_TLS: ${LDAP_START_TLS:-false}
+      LDAP_TLS_VERIFY: ${LDAP_TLS_VERIFY:-false}
+      # Account di servizio (necessario per l'SSO e per leggere i gruppi degli utenti SSO)
+      LDAP_BIND_USER: ${LDAP_BIND_USER:-}
+      LDAP_BIND_PASSWORD: ${LDAP_BIND_PASSWORD:-}
+      # --- Autorizzazioni ---
+      ADMIN_GROUP: ${ADMIN_GROUP:-Administrators}  # chi può modificare
+      READ_GROUP: ${READ_GROUP:-}                  # vuoto = tutti gli utenti di dominio
+      # --- SSO Kerberos (sessione Windows) ---
+      SSO_ENABLED: ${SSO_ENABLED:-true}
+      KRB5_REALM: ${KRB5_REALM:-}                 # default: LDAP_DOMAIN in maiuscolo
+      # --- Sessione ---
+      SECRET_KEY: ${SECRET_KEY:-}                 # vuoto = generata e salvata nel volume
+      SESSION_HOURS: ${SESSION_HOURS:-10}
+    volumes:
+      - rubrica-data:/data
+      # Cartella contenente krb5.keytab (solo se si usa l'SSO)
+      - ./krb5:/etc/krb5:ro
+    # Se il DNS dell'host non risolve il dominio AD, indicare i DNS dei domain controller:
+    # dns:
+    #   - 192.0.2.10
+    #   - 192.0.2.11
+
+volumes:
+  rubrica-data:

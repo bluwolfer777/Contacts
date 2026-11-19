@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accesso · {{TITLE}}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <div class="brand">
+      <img src="/static/favicon.svg" alt="" width="40" height="40">
+      <h1>{{TITLE}}</h1>
+    </div>
+    <p class="muted">Accedi con le credenziali di dominio.</p>
+    {{ERROR}}
+    <form method="post" action="/login" autocomplete="on">
+      <label>Utente
+        <input name="username" value="{{USERNAME}}" placeholder="nome.cognome" autocomplete="username" autofocus required>
+      </label>
+      <label>Password
+        <input name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn primary wide" type="submit">Accedi</button>
+    </form>
+    {{SSO}}
+    <p class="muted small">Dominio: {{DOMAIN}}</p>
+  </main>
+</body>
+</html>
